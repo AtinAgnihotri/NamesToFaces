@@ -14,6 +14,7 @@
 		858BC04C26A8A09400E702A5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 858BC04B26A8A09400E702A5 /* Assets.xcassets */; };
 		858BC04F26A8A09400E702A5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 858BC04D26A8A09400E702A5 /* LaunchScreen.storyboard */; };
 		858BC05926A915FB00E702A5 /* PersonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858BC05826A915FB00E702A5 /* PersonCell.swift */; };
+		85EA50CB26AA73EE0056103F /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EA50CA26AA73EE0056103F /* Person.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		858BC04E26A8A09400E702A5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		858BC05026A8A09400E702A5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		858BC05826A915FB00E702A5 /* PersonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonCell.swift; sourceTree = "<group>"; };
+		85EA50CA26AA73EE0056103F /* Person.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 				858BC04226A8A09200E702A5 /* AppDelegate.swift */,
 				858BC04426A8A09200E702A5 /* SceneDelegate.swift */,
 				858BC04626A8A09200E702A5 /* ViewController.swift */,
+				85EA50CA26AA73EE0056103F /* Person.swift */,
 				858BC04826A8A09200E702A5 /* Main.storyboard */,
 				858BC04B26A8A09400E702A5 /* Assets.xcassets */,
 				858BC04D26A8A09400E702A5 /* LaunchScreen.storyboard */,
@@ -140,6 +143,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				85EA50CB26AA73EE0056103F /* Person.swift in Sources */,
 				858BC04726A8A09200E702A5 /* ViewController.swift in Sources */,
 				858BC04326A8A09200E702A5 /* AppDelegate.swift in Sources */,
 				858BC05926A915FB00E702A5 /* PersonCell.swift in Sources */,
