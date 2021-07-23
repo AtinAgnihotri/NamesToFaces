@@ -8,7 +8,8 @@
 import UIKit
 
 class ViewController: UICollectionViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-
+    
+    var pickerType: UIImagePickerController.SourceType?
     var people = [Person]()
     
     override func viewDidLoad() {
@@ -19,13 +20,34 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     }
     
     func addNewImageButton() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewPerson))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(newPersonChoice))
     }
     
-    @objc func addNewPerson() {
+    
+    
+    @objc func newPersonChoice() {
+        let ac = UIAlertController(title: "Select Image", message: nil, preferredStyle: .actionSheet)
+        
+        let library = UIAlertAction(title: "Photos Library", style: .default) { [weak self] _ in
+            self?.addNewPerson(with: .photoLibrary)
+        }
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel)
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            let camera = UIAlertAction(title: "Camera", style: .default) { [weak self] _ in
+                self?.addNewPerson(with: .camera)
+            }
+            ac.addAction(camera)
+        }
+        ac.addAction(library)
+        ac.addAction(cancel)
+        present(ac, animated: true)
+    }
+    
+    func addNewPerson(with sourceType: UIImagePickerController.SourceType) {
         let picker = UIImagePickerController()
         picker.allowsEditing = true
         picker.delegate = self
+        picker.sourceType = sourceType
         present(picker, animated: true)
     }
     
@@ -51,10 +73,6 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         
         return cell
     }
-    
-    func loadImagesFromDisk() {
-        
-    }
 
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[.editedImage] as? UIImage else { return }
@@ -73,24 +91,42 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let person = people[indexPath.item]
-        promptPersonName(for: person)
+        let index = indexPath.item
+        promptPersonChoice(for: index)
     }
     
-    func promptPersonName(for person: Person) {
+    func promptPersonChoice(for index: Int) {
+        let ac = UIAlertController(title: "Do you want to . . .", message: nil, preferredStyle: .actionSheet)
+        let rename = UIAlertAction(title: "Rename", style: .default) {
+            [weak self] _ in
+            self?.promptPersonName(for: index)
+        }
+        let delete = UIAlertAction(title: "Delete", style: .destructive) {
+            [weak self] _ in
+            self?.deletePerson(at: index)
+        }
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel)
+        ac.addAction(rename)
+        ac.addAction(delete)
+        ac.addAction(cancel)
+        present(ac, animated: true)
+    }
+    
+    func promptPersonName(for index: Int) {
         let ac = UIAlertController(title: "Enter Person's Name", message: nil, preferredStyle: .alert)
         ac.addTextField()
         let cancel = UIAlertAction(title: "Cancel", style: .cancel)
         let submit = UIAlertAction(title: "Submit", style: .default) {
-            [weak self, weak ac, weak person] _ in
+            [weak self, weak ac] _ in
             guard let name = ac?.textFields?[0].text else {
                 return
             }
-            guard let person = person else {
+            guard let person = self?.people[index] else {
                 return
             }
             self?.savePerson(for: person, with: name)
         }
+        
         ac.addAction(submit)
         ac.addAction(cancel)
         present(ac, animated: true)
@@ -98,6 +134,11 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     
     func savePerson(for person: Person, with name: String) {
         person.name = name
+        collectionView.reloadData()
+    }
+    
+    func deletePerson(at index: Int) {
+        people.remove(at: index)
         collectionView.reloadData()
     }
     
