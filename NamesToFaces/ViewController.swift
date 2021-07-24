@@ -10,13 +10,34 @@ import UIKit
 class ViewController: UICollectionViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     var pickerType: UIImagePickerController.SourceType?
-    var people = [Person]()
+    var people = [Person]() {
+        didSet {
+            save()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         addNewImageButton()
         print("Reached the end of viewDidLoad")
-        
+        performSelector(inBackground: #selector(loadSavedPeoples), with: nil)
+    }
+    
+    @objc func loadSavedPeoples() {
+        if let savedPeople = UserDefaults.standard.object(forKey: "people") as? Data {
+            if let decodedPeople = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(savedPeople) as? [Person] {
+                DispatchQueue.main.async { [weak self] in
+                    self?.people = decodedPeople
+                    self?.collectionView.reloadData()
+                }
+            }
+        }
+    }
+    
+    func save() {
+        if let data = try? NSKeyedArchiver.archivedData(withRootObject: people, requiringSecureCoding: false) {
+            UserDefaults.standard.set(data, forKey: "people")
+        }
     }
     
     func addNewImageButton() {
@@ -135,6 +156,7 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     func savePerson(for person: Person, with name: String) {
         person.name = name
         collectionView.reloadData()
+        save()
     }
     
     func deletePerson(at index: Int) {
