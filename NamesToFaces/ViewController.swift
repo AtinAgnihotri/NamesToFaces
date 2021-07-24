@@ -24,6 +24,7 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     }
     
     @objc func loadSavedPeoples() {
+        /*
         if let savedPeople = UserDefaults.standard.object(forKey: "people") as? Data {
             if let decodedPeople = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(savedPeople) as? [Person] {
                 DispatchQueue.main.async { [weak self] in
@@ -32,11 +33,27 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
                 }
             }
         }
+        */
+        if let savedPeople = UserDefaults.standard.data(forKey: "people") {
+            let decoder = JSONDecoder()
+            if let decodedData = try? decoder.decode([Person].self, from: savedPeople) {
+                DispatchQueue.main.async { [weak self] in
+                    self?.people = decodedData
+                    self?.collectionView.reloadData()
+                }
+            }
+        }
     }
     
     func save() {
+        /*
         if let data = try? NSKeyedArchiver.archivedData(withRootObject: people, requiringSecureCoding: false) {
             UserDefaults.standard.set(data, forKey: "people")
+        }
+        */
+        let encoder = JSONEncoder()
+        if let encodedData = try? encoder.encode(people) {
+            UserDefaults.standard.set(encodedData, forKey: "people")
         }
     }
     

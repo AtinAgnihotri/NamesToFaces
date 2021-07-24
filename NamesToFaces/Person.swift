@@ -7,7 +7,9 @@
 
 import UIKit
 
-class Person: NSObject, NSCoding {
+//class Person: NSObject, NSCoding {
+class Person: NSObject, Codable {
+    /*
     func encode(with coder: NSCoder) {
         coder.encode(name, forKey: "name")
         coder.encode(image, forKey: "image")
@@ -17,6 +19,7 @@ class Person: NSObject, NSCoding {
         name = coder.decodeObject(forKey: "name") as? String ?? "Unknown Name"
         image = coder.decodeObject(forKey: "image") as? String ?? ""
     }
+    */
     
     var name: String
     var image: String
