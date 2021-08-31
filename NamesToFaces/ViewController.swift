@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import LocalAuthentication
 
 class ViewController: UICollectionViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -20,7 +21,8 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         super.viewDidLoad()
         addNewImageButton()
         print("Reached the end of viewDidLoad")
-        performSelector(inBackground: #selector(loadSavedPeoples), with: nil)
+        authenticateAndLoad()
+        
     }
     
     @objc func loadSavedPeoples() {
@@ -43,6 +45,24 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
                 }
             }
         }
+    }
+    
+    func authenticateAndLoad() {
+        let context = LAContext()
+        var error: NSError?
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+            let reason = "Identify yourself"
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { [weak self] success, authError in
+                if success {
+                    self?.performSelector(inBackground: #selector(self?.loadSavedPeoples), with: nil)
+                } else {
+                    self?.showError(title: "Authentication Failed", message: "You could not be verified. Please try again!")
+                }
+            }
+        } else {
+            showError(title: "Biometry Unavailable", message: "Your device is not configured for biometric authentication")
+        }
+        
     }
     
     func save() {
@@ -184,6 +204,25 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     func getDocumentsDirectory() -> URL {
         let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return path[0]
+    }
+    
+    func showError(title: String, message: String? = nil) {
+        showAlert(title: "🚨 " + title, message: message)
+    }
+    
+    func showAlert(title: String, message: String? = nil, actions: [UIAlertAction] = []) {
+        let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        if actions.isEmpty {
+            let ok = UIAlertAction(title: "OK", style: .default)
+            ac.addAction(ok)
+        } else {
+            actions.forEach { [weak ac] action in
+                ac?.addAction(action)
+            }
+        }
+        
+        present(ac, animated: true)
     }
 
 }
